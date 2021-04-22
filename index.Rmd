@@ -1,5 +1,5 @@
 ---
-author: "未命名 B01201001 一般系"
+author: "高于鈜 b06103005 歷史四"
 title: "期中考"
 subtitle: "程式設計與資料科學導論"
 date: |
@@ -42,6 +42,10 @@ library(ggplot2)
 ```{r message=FALSE}
 # Write your code here
 
+artists <- list.files("./lyrics")
+songs<- list.files("./lyrics/Lady Gaga")
+
+
 #### Do not modify the code below ####
 artists
 tail(songs)
@@ -73,6 +77,18 @@ tail(songs)
 
 ```{r}
 # Write your code here
+
+
+
+lyrics<-list(names(artists=list(lapply(lyrics$name , function(name){
+  song_name<-list.files(paste0("./lyrics/", name))
+  return(song_name)
+}))))
+
+l<-list(for(i in artists){
+  name<-list(i)
+  return(name)
+})
 
 #### Do not modify the code below ####
 tail(lyrics[['Taylor Swift']], 3)
@@ -117,6 +133,10 @@ anime <- read_csv('anime.csv')
 
 ```{r}
 # Write your code here
+ anime<-anime%>%
+  select (-Favorites)%>%
+  mutate(Score_new=round(Score))%>%
+  mutate(Genders=names("Genres"))
 
 #### Do not modify the code below ####
 colnames(anime)
@@ -152,11 +172,9 @@ dplyr-II 製作摘要表 (10分)
 ```{r}
 # Write your code here
 anime_summary <- anime %>%
-  top_n() %>%
-  filter() %>%
-  arrange() %>%
-  group_by() %>%
-  select()
+  group_by(Type)%>%
+  top_n(Popularity, 3) %>%
+  arrange(desc(Score) )
 
 #### Do not modify the code below ####
 head(anime_summary)
@@ -189,6 +207,8 @@ library(ggplot2)
 theme_set(theme_bw())
 
 # Write your code here
+ggplot(mpg, aes(cty, hwy))+
+  geom_point()
 ```
 
 
@@ -206,6 +226,12 @@ Tweak the plot (10 分)
 
 ```{r}
 # Write your code here
+ggplot(mpg, aes(cty, hwy))+
+  geom_point()+
+  facet_wrap(vars(year))+
+  geom_smooth(method="lm")+
+  labs(x = element_text("city miles (per gallon)"), y = element_text("highway miles (per gallon)"))
+
 ```
 
 
@@ -234,6 +260,9 @@ confirmed <- read_csv("./covid19_confirmed.csv")
 
 ```{r}
 # Write your code here
+library (tidyr)
+tidydf<-
+  gather(confirmed, key="Date", value="Confirmed",  "1/22/20":"4/18/21" )
 
 #### Do not modify the code below ####
 tidydf
@@ -261,7 +290,9 @@ tidydf
 
 ```{r}
 # Write your code here
-
+tidysum<-tidydf%>%
+  mutate(Date=as.Date(tidydf$Date, format="%m/%d/%y"))%>%
+  group_by(Country, Date)
 #### Do not modify the code below ####
 tidysum %>% filter(Country %in% c("Canada", "United Kingdom"), Confirmed > 1000000)
 # Should print out:
@@ -291,6 +322,8 @@ tidysum %>% filter(Country %in% c("Canada", "United Kingdom"), Confirmed > 10000
 ```{r}
 # If you need the gift, please read the data in this chunk
 
+
+
 ```
 
 
@@ -307,6 +340,14 @@ tidysum %>% filter(Country %in% c("Canada", "United Kingdom"), Confirmed > 10000
 ```{r}
 # Modify the code below
 compare_plot <- function(df, countries, start, end, point) {
+  plot<-ggplot(df$countries, aes(Date, Confirmed, color=Country))+
+    geom_quantile()
+  if(point==TRUE){
+    plot_point<-plot+geom_point()
+    return(plot_point)
+  }else{
+    return(plot)
+  }
   
 }
 
@@ -380,6 +421,19 @@ N <- 500
 gender <- rbinom(N, size = 1, prob = 0.55)  # Bernoulli,  1: male,  0: female
 # Write your code here
 
+dad<-rnorm(500, mean=0, sd=1)
+mom<-rnorm(500, mean=0, sd=1)
+kid<-for(g in seq_along(gender)){
+  if (g= 1)
+  kid<-rnorm(1, mean=1.0*mom+1.5*dad, sd=1)
+  return(kid) 
+  else if (g=0)
+  kid<-rnorm(1, mean=1.5*mom+1.0*dad, sd=1)
+  return(kid)}
+
+
+df<-data.frame(dad, mom, gender, kid)
+  
 #### Do not modify the code below ####
 tail(df, 10)
 summary(df)
